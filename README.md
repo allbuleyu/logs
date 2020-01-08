@@ -1,2 +1,1 @@
-# logs
-用go定制一个日志组件
+# logs 仿logrus (https://github.com/sirupsen/logrus) 做一个轮子
