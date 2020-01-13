@@ -5,7 +5,7 @@ type TextFormatter struct {
 
 }
 
-func (t TextFormatter) Format() string {
+func (t *TextFormatter) Format() string {
 	return ""
 }
 
