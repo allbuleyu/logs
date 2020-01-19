@@ -82,8 +82,8 @@ func (l *Logger) Print(args ...interface{}) {
 	panic("implement me")
 }
 
-func (l *Logger) Printf(string, args ...interface{}) {
-	fmt.Println(args)
+func (l *Logger) Printf(msg string, args ...interface{}) {
+	fmt.Println()
 }
 
 func (l *Logger) Println(args ...interface{}) {
@@ -94,7 +94,7 @@ func (l *Logger) Fatal(args ...interface{}) {
 	panic("implement me")
 }
 
-func (l *Logger) Fatalf(string, args ...interface{}) {
+func (l *Logger) Fatalf(msg string, args ...interface{}) {
 	panic("implement me")
 }
 
@@ -106,7 +106,7 @@ func (l *Logger) Panic(args ...interface{}) {
 	panic("implement me")
 }
 
-func (l *Logger) Panicf(string, args ...interface{}) {
+func (l *Logger) Panicf(msg string, args ...interface{}) {
 	panic("implement me")
 }
 

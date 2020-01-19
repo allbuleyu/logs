@@ -2,5 +2,5 @@ package logs
 
 
 type Formatter interface {
-	Format() string
+	Format(entry *Entry) ([]byte, error)
 }

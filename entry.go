@@ -4,12 +4,22 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 	"runtime"
+	"sync"
 	"time"
+)
+
+var (
+	bufferPool *sync.Pool
 )
 
 type Entry struct {
 	logger *Logger
+
+	level Level
+
+	message string
 
 	data Fields
 
@@ -34,7 +44,43 @@ func NewEntry(l *Logger) *Entry {
 }
 
 func (entry *Entry) log(level Level, msg string) {
+	var buffer *bytes.Buffer
 
+	if entry.cTime.IsZero() {
+		entry.cTime = time.Now()
+	}
+
+	entry.level = level
+	entry.message = msg
+
+	buffer = bufferPool.Get().(*bytes.Buffer)
+	buffer.Reset()
+	defer bufferPool.Put(buffer)
+	entry.buf = buffer
+
+	entry.write()
+
+	entry.buf = nil
+
+	if level <= PanicLevel {
+		panic(&entry)
+	}
+}
+
+func (entry *Entry) write() {
+	entry.logger.mu.Lock()
+	defer entry.logger.mu.Unlock()
+
+	serialized, err := entry.logger.Formatter.Format(entry)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to obtain reader, %v\n", err)
+		return
+	}
+
+	_, err = entry.logger.Out.Write(serialized)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to wirte to log, %v\n", err)
+	}
 }
 
 func (entry *Entry) Log(level Level, args ...interface{}) {
